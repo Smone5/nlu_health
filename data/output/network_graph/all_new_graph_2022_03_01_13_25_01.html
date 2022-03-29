@@ -1,0 +1,228 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1>All Confusion Matrix Graph</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1000px;
+            height: 1000px;
+            background-color: #222222;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 1000px;
+            height: 1000px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id = "config"></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 3, "id": "refund.amount.timeline", "label": "refund.amount.timeline", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 3, "id": "rtn_ordered_different_item", "label": "rtn_ordered_different_item", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 3, "id": "rcs.1-rcs_group_entry", "label": "rcs.1-rcs_group_entry", "shape": "dot", "size": 7}, {"font": {"color": "white"}, "group": 3, "id": "rcs_entry", "label": "rcs_entry", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 9, "id": "how.to.refund.a.buyer", "label": "how.to.refund.a.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 9, "id": "rtn_defective_item", "label": "rtn_defective_item", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 9, "id": "smalltalk.legal.ebay.site.tools.negative.feedback", "label": "smalltalk.legal.ebay.site.tools.negative.feedback", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 5, "id": "cnt_entry", "label": "cnt_entry", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "upi_entry", "label": "upi_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 5, "id": "rtn.1-rtn_ordered_wrong_item", "label": "rtn.1-rtn_ordered_wrong_item", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 5, "id": "report.buyer", "label": "report.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 5, "id": "vrp.1-vrp_entry", "label": "vrp.1-vrp_entry", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "payment.on.hold", "label": "payment.on.hold", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": 13, "id": "rtn.1-rtn_not_as_described", "label": "rtn.1-rtn_not_as_described", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 13, "id": "handling.returns", "label": "handling.returns", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "change.delivery.address.after.sale", "label": "change.delivery.address.after.sale", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "cts_entry", "label": "cts_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "talk_to_human_entry", "label": "talk_to_human_entry", "shape": "dot", "size": 6}, {"font": {"color": "white"}, "group": 14, "id": "faq.1.00-account.signing.out", "label": "faq.1.00-account.signing.out", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 14, "id": "how do i sign up for an account?", "label": "how do i sign up for an account?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 15, "id": "group.best.offer.counter.offer", "label": "group.best.offer.counter.offer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 15, "id": "promotions.manager", "label": "promotions.manager", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 6, "id": "rcs_escalate_entry", "label": "rcs_escalate_entry", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 4, "id": "no.seller.response", "label": "no.seller.response", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 6, "id": "inr_entry", "label": "inr_entry", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 6, "id": "rtn_arrived_damaged", "label": "rtn_arrived_damaged", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "do i need to pay for an item that i bid on and won but no longer want?", "label": "do i need to pay for an item that i bid on and won but no longer want?", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "ebay.messages", "label": "ebay.messages", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 4, "id": "no.response.to.cancel.order", "label": "no.response.to.cancel.order", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "smalltalk.user.frustrated.waiting", "label": "smalltalk.user.frustrated.waiting", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 6, "id": "guest.buyer", "label": "guest.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 6, "id": "how.inr.works", "label": "how.inr.works", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 6, "id": "faq.1.00-managed.payments.bank.account.details", "label": "faq.1.00-managed.payments.bank.account.details", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "member.to.member.abuse", "label": "member.to.member.abuse", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "rcs_appeal_entry", "label": "rcs_appeal_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 3, "id": "partial_refund", "label": "partial_refund", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 3, "id": "rcs_close_entry", "label": "rcs_close_entry", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 1, "id": "default_fallback", "label": "default_fallback", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": 7, "id": "smalltalk.greetings.hello", "label": "smalltalk.greetings.hello", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 7, "id": "managed.payments.bank.account.details", "label": "managed.payments.bank.account.details", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 1, "id": "faq.1.00-selling", "label": "faq.1.00-selling", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "default_dont_see_item_already_tried_that", "label": "default_dont_see_item_already_tried_that", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "group.account.changes", "label": "group.account.changes", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 1, "id": "understand.invoice", "label": "understand.invoice", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 1, "id": "buyer.returned.item.damaged", "label": "buyer.returned.item.damaged", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 9, "id": "help.menu", "label": "help.menu", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 1, "id": "vrp_entry", "label": "vrp_entry", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "smalltalk.legal.agent.abuse.mild", "label": "smalltalk.legal.agent.abuse.mild", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "what is seller help?", "label": "what is seller help?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "buying.coupons.vouchers", "label": "buying.coupons.vouchers", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "rtn_group_entry", "label": "rtn_group_entry", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "smalltalk.confirmation.cancel", "label": "smalltalk.confirmation.cancel", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "buying.watch.list", "label": "buying.watch.list", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "smalltalk.agent.ready", "label": "smalltalk.agent.ready", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "spoof.emails", "label": "spoof.emails", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "change.delivery.method.costs.after.sale", "label": "change.delivery.method.costs.after.sale", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 10, "id": "local.pickup", "label": "local.pickup", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 10, "id": "off.ebay", "label": "off.ebay", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 10, "id": "faq.1.00-buying", "label": "faq.1.00-buying", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 16, "id": "tpk_entry?", "label": "tpk_entry?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 16, "id": "mark.as.sold", "label": "mark.as.sold", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "can i ship my item without tracking?", "label": "can i ship my item without tracking?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "inr_group_entry", "label": "inr_group_entry", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 7, "id": "group.fraud", "label": "group.fraud", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 7, "id": "someone.else.used.account", "label": "someone.else.used.account", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 7, "id": "change.automatic.payment", "label": "change.automatic.payment", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 8, "id": "faq.1.00-technical.issues", "label": "faq.1.00-technical.issues", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 7, "id": "buying.selling.restricted", "label": "buying.selling.restricted", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 7, "id": "faq.1.00-switch.currency", "label": "faq.1.00-switch.currency", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "reserve.price", "label": "reserve.price", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 17, "id": "change.remove.feedback", "label": "change.remove.feedback", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 17, "id": "why.ebay.removed.feedback", "label": "why.ebay.removed.feedback", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "faq.1.26-someone.else.used.account", "label": "faq.1.26-someone.else.used.account", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "card.charged.multiple.times", "label": "card.charged.multiple.times", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "group.money", "label": "group.money", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 18, "id": "faq.1.00-finding.listing", "label": "faq.1.00-finding.listing", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 18, "id": "qlt.desc.listingtool", "label": "qlt.desc.listingtool", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "faq.1.00-update_rtn_tracking_info", "label": "faq.1.00-update_rtn_tracking_info", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "tpk_entry", "label": "tpk_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 3, "id": "smalltalk.agent.right.ok", "label": "smalltalk.agent.right.ok", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "update_rtn_tracking_info", "label": "update_rtn_tracking_info", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 11, "id": "faq.1.00-group.fees", "label": "faq.1.00-group.fees", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 11, "id": "finding.listing", "label": "finding.listing", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 11, "id": "why am i being charged vat on selling fees?", "label": "why am i being charged vat on selling fees?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 19, "id": "mui.ifh.faq.1.00-accept.paypal", "label": "mui.ifh.faq.1.00-accept.paypal", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 19, "id": "group.paypal", "label": "group.paypal", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 6, "id": "how do i sign in to my account if i haven\u0027t used it in a long time?", "label": "how do i sign in to my account if i haven\u0027t used it in a long time?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 8, "id": "selling", "label": "selling", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 8, "id": "how do i set up buyer requirements?", "label": "how do i set up buyer requirements?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 8, "id": "more.than.90.buyer", "label": "more.than.90.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 8, "id": "relist.item", "label": "relist.item", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 8, "id": "revise.listing", "label": "revise.listing", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 8, "id": "seller.hub.seller.help", "label": "seller.hub.seller.help", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 5, "id": "inr.1-inr_entry", "label": "inr.1-inr_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 5, "id": "refunded.item.shown.unpaid", "label": "refunded.item.shown.unpaid", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 5, "id": "ato.transaction", "label": "ato.transaction", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 5, "id": "rtn_not_as_described", "label": "rtn_not_as_described", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 20, "id": "shipping.return.postage.buyer", "label": "shipping.return.postage.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 20, "id": "click.collect", "label": "click.collect", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "callme_entry", "label": "callme_entry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "ebay.app", "label": "ebay.app", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "pay.for.items", "label": "pay.for.items", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "pay.ebay.fees", "label": "pay.ebay.fees", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 21, "id": "faq.1.00-group.money", "label": "faq.1.00-group.money", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 21, "id": "how can i get my ad fee credited back?", "label": "how can i get my ad fee credited back?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 12, "id": "report.seller", "label": "report.seller", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 12, "id": "what can cause me to lose my seller protections?", "label": "what can cause me to lose my seller protections?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 12, "id": "counter.offer.buyer", "label": "counter.offer.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 22, "id": "group.fees", "label": "group.fees", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 22, "id": "why doesn\u0027t ebay always refund the full return shipping costs?", "label": "why doesn\u0027t ebay always refund the full return shipping costs?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "accept.paypal", "label": "accept.paypal", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "smalltalk.dialog.hold_on", "label": "smalltalk.dialog.hold_on", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "rtn_missing_parts", "label": "rtn_missing_parts", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "marked.as.delivered", "label": "marked.as.delivered", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 23, "id": "faq.1.07-manage.block.bidder.buyer", "label": "faq.1.07-manage.block.bidder.buyer", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 23, "id": "gsp", "label": "gsp", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 24, "id": "faq.1.00-buying.selling.restricted", "label": "faq.1.00-buying.selling.restricted", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 24, "id": "selling.protection.embg", "label": "selling.protection.embg", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 25, "id": "faq.1.00-buying.retract.bid", "label": "faq.1.00-buying.retract.bid", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 25, "id": "why can\u0027t i bid on an item?", "label": "why can\u0027t i bid on an item?", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 5, "id": "guest.order.details", "label": "guest.order.details", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 26, "id": "faq.1.08-end.listing.early", "label": "faq.1.08-end.listing.early", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 26, "id": "how do i close my ebay store?", "label": "how do i close my ebay store?", "shape": "dot", "size": 1}]);
+        edges = new vis.DataSet([{"from": "refund.amount.timeline", "to": "rtn_ordered_different_item", "weight": 1.0}, {"from": "refund.amount.timeline", "to": "rcs.1-rcs_group_entry", "weight": 1.0}, {"from": "rtn_ordered_different_item", "to": "rcs_entry", "weight": 1.0}, {"from": "how.to.refund.a.buyer", "to": "rtn_defective_item", "weight": 1.0}, {"from": "rtn_defective_item", "to": "smalltalk.legal.ebay.site.tools.negative.feedback", "weight": 1.0}, {"from": "cnt_entry", "to": "upi_entry", "weight": 1.0}, {"from": "cnt_entry", "to": "rtn.1-rtn_ordered_wrong_item", "weight": 1.0}, {"from": "cnt_entry", "to": "report.buyer", "weight": 1.0}, {"from": "cnt_entry", "to": "vrp.1-vrp_entry", "weight": 1.0}, {"from": "upi_entry", "to": "payment.on.hold", "weight": 3.0}, {"from": "rtn.1-rtn_not_as_described", "to": "handling.returns", "weight": 1.0}, {"from": "change.delivery.address.after.sale", "to": "cts_entry", "weight": 1.0}, {"from": "cts_entry", "to": "talk_to_human_entry", "weight": 3.0}, {"from": "faq.1.00-account.signing.out", "to": "how do i sign up for an account?", "weight": 1.0}, {"from": "group.best.offer.counter.offer", "to": "promotions.manager", "weight": 1.0}, {"from": "rcs_escalate_entry", "to": "no.seller.response", "weight": 1.0}, {"from": "rcs_escalate_entry", "to": "inr_entry", "weight": 1.0}, {"from": "rcs_escalate_entry", "to": "rtn_arrived_damaged", "weight": 1.0}, {"from": "no.seller.response", "to": "do i need to pay for an item that i bid on and won but no longer want?", "weight": 1.0}, {"from": "no.seller.response", "to": "ebay.messages", "weight": 1.0}, {"from": "no.seller.response", "to": "no.response.to.cancel.order", "weight": 1.0}, {"from": "no.seller.response", "to": "smalltalk.user.frustrated.waiting", "weight": 1.0}, {"from": "inr_entry", "to": "guest.buyer", "weight": 1.0}, {"from": "inr_entry", "to": "how.inr.works", "weight": 1.0}, {"from": "inr_entry", "to": "faq.1.00-managed.payments.bank.account.details", "weight": 1.0}, {"from": "member.to.member.abuse", "to": "ebay.messages", "weight": 1.0}, {"from": "ebay.messages", "to": "talk_to_human_entry", "weight": 1.0}, {"from": "ebay.messages", "to": "payment.on.hold", "weight": 1.0}, {"from": "rcs_appeal_entry", "to": "partial_refund", "weight": 1.0}, {"from": "rcs_appeal_entry", "to": "rcs_close_entry", "weight": 1.0}, {"from": "partial_refund", "to": "rcs.1-rcs_group_entry", "weight": 1.0}, {"from": "partial_refund", "to": "default_fallback", "weight": 1.0}, {"from": "smalltalk.greetings.hello", "to": "default_fallback", "weight": 1.0}, {"from": "smalltalk.greetings.hello", "to": "managed.payments.bank.account.details", "weight": 1.0}, {"from": "default_fallback", "to": "talk_to_human_entry", "weight": 1.0}, {"from": "default_fallback", "to": "faq.1.00-selling", "weight": 1.0}, {"from": "default_fallback", "to": "default_dont_see_item_already_tried_that", "weight": 1.0}, {"from": "default_fallback", "to": "group.account.changes", "weight": 1.0}, {"from": "default_fallback", "to": "understand.invoice", "weight": 1.0}, {"from": "default_fallback", "to": "buyer.returned.item.damaged", "weight": 1.0}, {"from": "default_fallback", "to": "help.menu", "weight": 1.0}, {"from": "default_fallback", "to": "vrp_entry", "weight": 1.0}, {"from": "default_fallback", "to": "smalltalk.legal.agent.abuse.mild", "weight": 1.0}, {"from": "default_fallback", "to": "what is seller help?", "weight": 1.0}, {"from": "default_fallback", "to": "buying.coupons.vouchers", "weight": 1.0}, {"from": "default_fallback", "to": "rtn_group_entry", "weight": 1.0}, {"from": "default_fallback", "to": "smalltalk.confirmation.cancel", "weight": 1.0}, {"from": "default_fallback", "to": "rcs_close_entry", "weight": 1.0}, {"from": "default_fallback", "to": "managed.payments.bank.account.details", "weight": 1.0}, {"from": "default_fallback", "to": "buying.watch.list", "weight": 1.0}, {"from": "default_fallback", "to": "smalltalk.agent.ready", "weight": 1.0}, {"from": "default_fallback", "to": "spoof.emails", "weight": 1.0}, {"from": "group.account.changes", "to": "change.delivery.method.costs.after.sale", "weight": 1.0}, {"from": "group.account.changes", "to": "rcs.1-rcs_group_entry", "weight": 1.0}, {"from": "local.pickup", "to": "off.ebay", "weight": 1.0}, {"from": "off.ebay", "to": "faq.1.00-buying", "weight": 1.0}, {"from": "tpk_entry?", "to": "mark.as.sold", "weight": 1.0}, {"from": "rcs.1-rcs_group_entry", "to": "can i ship my item without tracking?", "weight": 1.0}, {"from": "rcs.1-rcs_group_entry", "to": "inr_group_entry", "weight": 2.0}, {"from": "rcs.1-rcs_group_entry", "to": "rtn_arrived_damaged", "weight": 1.0}, {"from": "rcs.1-rcs_group_entry", "to": "rcs_close_entry", "weight": 1.0}, {"from": "group.fraud", "to": "someone.else.used.account", "weight": 1.0}, {"from": "someone.else.used.account", "to": "change.automatic.payment", "weight": 2.0}, {"from": "someone.else.used.account", "to": "faq.1.00-technical.issues", "weight": 1.0}, {"from": "someone.else.used.account", "to": "buying.selling.restricted", "weight": 1.0}, {"from": "someone.else.used.account", "to": "faq.1.00-switch.currency", "weight": 1.0}, {"from": "reserve.price", "to": "understand.invoice", "weight": 1.0}, {"from": "change.remove.feedback", "to": "why.ebay.removed.feedback", "weight": 1.0}, {"from": "change.automatic.payment", "to": "managed.payments.bank.account.details", "weight": 1.0}, {"from": "do i need to pay for an item that i bid on and won but no longer want?", "to": "faq.1.26-someone.else.used.account", "weight": 1.0}, {"from": "card.charged.multiple.times", "to": "group.money", "weight": 1.0}, {"from": "group.money", "to": "payment.on.hold", "weight": 1.0}, {"from": "faq.1.00-finding.listing", "to": "qlt.desc.listingtool", "weight": 1.0}, {"from": "faq.1.00-update_rtn_tracking_info", "to": "tpk_entry", "weight": 1.0}, {"from": "tpk_entry", "to": "payment.on.hold", "weight": 1.0}, {"from": "rcs_entry", "to": "smalltalk.agent.right.ok", "weight": 1.0}, {"from": "rcs_entry", "to": "update_rtn_tracking_info", "weight": 1.0}, {"from": "update_rtn_tracking_info", "to": "payment.on.hold", "weight": 2.0}, {"from": "faq.1.00-group.fees", "to": "finding.listing", "weight": 1.0}, {"from": "faq.1.00-group.fees", "to": "why am i being charged vat on selling fees?", "weight": 1.0}, {"from": "mui.ifh.faq.1.00-accept.paypal", "to": "group.paypal", "weight": 1.0}, {"from": "help.menu", "to": "smalltalk.legal.ebay.site.tools.negative.feedback", "weight": 1.0}, {"from": "help.menu", "to": "talk_to_human_entry", "weight": 1.0}, {"from": "faq.1.00-managed.payments.bank.account.details", "to": "how do i sign in to my account if i haven\u0027t used it in a long time?", "weight": 1.0}, {"from": "selling", "to": "how do i set up buyer requirements?", "weight": 1.0}, {"from": "selling", "to": "more.than.90.buyer", "weight": 1.0}, {"from": "selling", "to": "relist.item", "weight": 1.0}, {"from": "selling", "to": "faq.1.00-technical.issues", "weight": 1.0}, {"from": "selling", "to": "faq.1.26-someone.else.used.account", "weight": 1.0}, {"from": "relist.item", "to": "revise.listing", "weight": 1.0}, {"from": "faq.1.00-technical.issues", "to": "seller.hub.seller.help", "weight": 1.0}, {"from": "inr.1-inr_entry", "to": "refunded.item.shown.unpaid", "weight": 1.0}, {"from": "inr.1-inr_entry", "to": "ato.transaction", "weight": 2.0}, {"from": "ato.transaction", "to": "rtn_not_as_described", "weight": 1.0}, {"from": "ato.transaction", "to": "vrp.1-vrp_entry", "weight": 1.0}, {"from": "shipping.return.postage.buyer", "to": "click.collect", "weight": 1.0}, {"from": "talk_to_human_entry", "to": "callme_entry", "weight": 3.0}, {"from": "talk_to_human_entry", "to": "ebay.app", "weight": 1.0}, {"from": "callme_entry", "to": "smalltalk.user.frustrated.waiting", "weight": 1.0}, {"from": "pay.for.items", "to": "pay.ebay.fees", "weight": 1.0}, {"from": "pay.ebay.fees", "to": "payment.on.hold", "weight": 1.0}, {"from": "faq.1.00-group.money", "to": "how can i get my ad fee credited back?", "weight": 1.0}, {"from": "buying.selling.restricted", "to": "managed.payments.bank.account.details", "weight": 1.0}, {"from": "report.seller", "to": "what can cause me to lose my seller protections?", "weight": 1.0}, {"from": "report.seller", "to": "counter.offer.buyer", "weight": 1.0}, {"from": "group.fees", "to": "why doesn\u0027t ebay always refund the full return shipping costs?", "weight": 1.0}, {"from": "accept.paypal", "to": "payment.on.hold", "weight": 1.0}, {"from": "payment.on.hold", "to": "smalltalk.dialog.hold_on", "weight": 1.0}, {"from": "payment.on.hold", "to": "rtn_missing_parts", "weight": 1.0}, {"from": "payment.on.hold", "to": "marked.as.delivered", "weight": 1.0}, {"from": "faq.1.07-manage.block.bidder.buyer", "to": "gsp", "weight": 1.0}, {"from": "faq.1.00-buying.selling.restricted", "to": "selling.protection.embg", "weight": 1.0}, {"from": "faq.1.00-buying.retract.bid", "to": "why can\u0027t i bid on an item?", "weight": 1.0}, {"from": "vrp.1-vrp_entry", "to": "guest.order.details", "weight": 2.0}, {"from": "faq.1.08-end.listing.early", "to": "how do i close my ebay store?", "weight": 1.0}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0.8,
+            "centralGravity": 0.035,
+            "damping": 0.87,
+            "gravitationalConstant": -603,
+            "springConstant": 0.03,
+            "springLength": 60
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
